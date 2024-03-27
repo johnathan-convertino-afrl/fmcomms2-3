@@ -266,8 +266,8 @@ module system_wrapper #(
     //clocks
     .delay_clk(s_delay_clk),
     //RX LVDS
-    .rx_clk_in_p(rx_clk_in_p),
-    .rx_clk_in_n(rx_clk_in_n),
+    .rx_clk_in_p(rx_clk_in),
+    .rx_clk_in_n(1'b0),
     .rx_frame_in_p(rx_frame_in_p),
     .rx_frame_in_n(rx_frame_in_n),
     .rx_data_in_p(rx_data_in_p),
