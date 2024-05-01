@@ -22,10 +22,8 @@
 ### Dependencies
 #### Build
   - AFRL:utility:digilent_zed_board_base:1.0.0
-  - AD:common:ad_iobuf:1.0.0
   - AFRL:utility:digilent_zed_boot_gen:1.0.0
   - AFRL:utility:xilinx_zc706_board_base:1.0.0
-  - AD:common:ad_iobuf:1.0.0
   - AFRL:utility:xilinx_zc706_boot_gen:1.0.0
   - AFRL:utility:xilinx_zc702_board_base:1.0.0
   - AD:common:ad_iobuf:1.0.0
@@ -74,44 +72,44 @@
   - system_pl_wrapper.v
   - system_wrapper.v
 
-### common
+#### common
   - ad9361_pl_wrapper.v
 
-### hanpilot
+#### hanpilot
   - system_constr.sdc
   - system_gen.tcl
   - system_pl_gen.tcl
   - system_pl_wrapper.v
   - system_wrapper.v
 
-### inprogress (added in future once VexRiscv is ready)
+#### inprogress (added in future once VexRiscv is ready)
   - genesys_2
   - kc705
   - netfpga_1g-cml
   - vc707
 
-### zc702
+#### zc702
   - system_constr.xdc
   - system_gen.tcl
   - system_pl_gen.tcl
   - system_pl_wrapper.v
   - system_wrapper.v
 
-### zc706
+#### zc706
   - system_constr.xdc
   - system_gen.tcl
   - system_pl_gen.tcl
   - system_pl_wrapper.v
   - system_wrapper.v
 
-### zcu102
+#### zcu102
   - system_constr.xdc
   - system_gen.tcl
   - system_pl_gen.tcl
   - system_pl_wrapper.v
   - system_wrapper.v
 
-### zed
+#### zed
   - system_constr.xdc
   - system_gen.tcl
   - system_pl_gen.tcl
