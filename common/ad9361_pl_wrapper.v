@@ -746,7 +746,7 @@ module ad9361_pl_wrapper #(
     .m_src_axi_aresetn(axi_aresetn),
 
     // Read address
-    .m_src_axi_arready(dac_m_src_axi_araddr),
+    .m_src_axi_arready(dac_m_src_axi_arready),
     .m_src_axi_arvalid(dac_m_src_axi_arvalid),
     .m_src_axi_araddr(dac_m_src_axi_araddr),
     .m_src_axi_arlen(dac_m_src_axi_arlen),
