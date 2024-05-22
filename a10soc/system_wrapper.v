@@ -469,7 +469,7 @@ module system_wrapper #(
     .sys_spi_MOSI(spi_mosi),
     .sys_spi_SCLK(spi_clk),
     .sys_spi_SS_n(spi_csn),
-    .irq_irq({s_dac_dma_irq, s_adc_dma_irq, 2{1'b0}})
+    .irq_irq({s_dac_dma_irq, s_adc_dma_irq, {2{1'b0}}})
   );
 
 

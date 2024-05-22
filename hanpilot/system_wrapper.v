@@ -528,7 +528,7 @@ module system_wrapper #(
     .fmc_i2c_scl_in(fmc_i2c_scl_in),
     .fmc_i2c_sda_oe(fmc_i2c_sda_oe),
     .fmc_i2c_scl_oe(fmc_i2c_scl_oe),
-    .irq_irq({s_dac_dma_irq, s_adc_dma_irq, 2{1'b0}})
+    .irq_irq({s_dac_dma_irq, s_adc_dma_irq, {2{1'b0}}})
   );
 
 
