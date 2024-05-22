@@ -453,7 +453,7 @@ module system_wrapper #(
     .sys_hps_io_hps_io_gpio_gpio2_io10 (hps_gpio[2]),
     .sys_hps_io_hps_io_gpio_gpio2_io11 (hps_gpio[3]),
     .sys_hps_out_rstn_reset_n (sys_hps_resetn),
-    .sys_hps_fpga_irq1_irq ({32{1'b0}),
+    .sys_hps_fpga_irq1_irq ({32{1'b0}}),
 
     .sys_hps_dma_data_awid(0),
     .sys_hps_dma_data_awaddr(adc_hp0_axi_awaddr),
