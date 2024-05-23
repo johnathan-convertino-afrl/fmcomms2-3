@@ -70,7 +70,6 @@ module system_wrapper #(
 
   wire    [94:0]  gpio_i;
   wire    [94:0]  gpio_o;
-  wire    [ 2:0]  spi0_csn;
 
   //PS TO PL / PL TO PS signals
 
@@ -148,8 +147,6 @@ module system_wrapper #(
   assign gpio_i[39:32] = gpio_status;
   assign gpio_i[31:13] = gpio_o[31:13];
   assign gpio_i[12: 0] = gpio_bd_i;
-
-  assign spi_csn = spi0_csn[0];
 
   system_pl_wrapper #(
     .FPGA_TECHNOLOGY(FPGA_TECHNOLOGY),
