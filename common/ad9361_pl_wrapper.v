@@ -457,7 +457,7 @@ module ad9361_pl_wrapper #(
     .ASYNC_CLK_SRC_DEST(1),
     .ASYNC_CLK_DEST_REQ(0),
     .AXI_SLICE_DEST(0),
-    .AXI_SLICE_SRC(0),
+    .AXI_SLICE_SRC(1),
     .SYNC_TRANSFER_START(1),
     .CYCLIC(0),
     .DMA_AXI_PROTOCOL_DEST(DMA_AXI_PROTOCOL_TO_PS), //1 = AXI3, 0 = AXI4
@@ -653,7 +653,7 @@ module ad9361_pl_wrapper #(
     .ASYNC_CLK_REQ_SRC(0),
     .ASYNC_CLK_SRC_DEST(1),
     .ASYNC_CLK_DEST_REQ(1),
-    .AXI_SLICE_DEST(0),
+    .AXI_SLICE_DEST(1),
     .AXI_SLICE_SRC(0),
     .SYNC_TRANSFER_START(0),
     .CYCLIC(1),
