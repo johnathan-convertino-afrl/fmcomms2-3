@@ -671,7 +671,7 @@ module ad9361_pl_wrapper #(
     .DISABLE_DEBUG_REGISTERS(0),
     .ENABLE_DIAGNOSTICS_IF(0),
     .ALLOW_ASYM_MEM(1)
-    // .CACHE_COHERENT_DEST(0)
+    .CACHE_COHERENT_DEST(0)
   ) inst_dac_axi_dmac (
     // Slave AXI interface
     .s_axi_aclk(axi_aclk),
