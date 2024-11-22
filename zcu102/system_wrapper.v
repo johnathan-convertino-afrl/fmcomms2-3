@@ -1,31 +1,78 @@
 //******************************************************************************
-/// @FILE    system_wrapper.v
-/// @AUTHOR  JAY CONVERTINO
-/// @DATE    2023.11.02
-/// @BRIEF   System wrapper for pl and ps.
-///
-/// @LICENSE MIT
-///  Copyright 2023 Jay Convertino
-///
-///  Permission is hereby granted, free of charge, to any person obtaining a copy
-///  of this software and associated documentation files (the "Software"), to
-///  deal in the Software without restriction, including without limitation the
-///  rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
-///  sell copies of the Software, and to permit persons to whom the Software is
-///  furnished to do so, subject to the following conditions:
-///
-///  The above copyright notice and this permission notice shall be included in
-///  all copies or substantial portions of the Software.
-///
-///  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-///  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-///  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-///  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-///  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-///  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
-///  IN THE SOFTWARE.
+//  file:     system_wrapper.v
+//
+//  author:   JAY CONVERTINO
+//
+//  date:     2023/11/02
+//
+//  about:    Brief
+//  System wrapper for pl and ps for zcu102 board.
+//
+//  license: License MIT
+//  Copyright 2023 Jay Convertino
+//
+//  Permission is hereby granted, free of charge, to any person obtaining a copy
+//  of this software and associated documentation files (the "Software"), to
+//  deal in the Software without restriction, including without limitation the
+//  rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+//  sell copies of the Software, and to permit persons to whom the Software is
+//  furnished to do so, subject to the following conditions:
+//
+//  The above copyright notice and this permission notice shall be included in
+//  all copies or substantial portions of the Software.
+//
+//  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+//  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+//  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+//  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+//  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+//  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+//  IN THE SOFTWARE.
 //******************************************************************************
 
+/*
+ * Module: system_wrapper
+ *
+ * System wrapper for pl and ps for zcu102 board.
+ *
+ * Parameters:
+ *
+ * FPGA_TECHNOLOGY        - Type of FPGA, such as Ultrascale, Arria 10. 3 is for ultrascale+.
+ * FPGA_FAMILY            - Sub type of fpga, such as GX, SX, etc. 4 is for zynq.
+ * SPEED_GRADE            - Number that corresponds to the ships recommeneded speed. 20 is for -2.
+ * DEV_PACKAGE            - Specify a number that is equal to the manufactures package. 3 is for ff.
+ * DELAY_REFCLK_FREQUENCY - Reference clock frequency used for ad_data_in instances
+ * ADC_INIT_DELAY         - Initial Delay for the ADC
+ * DAC_INIT_DELAY         - Initial Delay for the DAC
+ *
+ * Ports:
+ *
+ * gpio_bd_i              - gpio
+ * gpio_bd_o              - gpio
+ * rx_clk_in_p            - fmcomms2-3 rx clk
+ * rx_clk_in_n            - fmcomms2-3 rx clk
+ * rx_frame_in_p          - fmcomms2-3 rx frame
+ * rx_frame_in_n          - fmcomms2-3 rx frame
+ * rx_data_in_p           - fmcomms2-3 rx data
+ * rx_data_in_n           - fmcomms2-3 rx data
+ * tx_clk_out_p           - fmcomms2-3 tx clk
+ * tx_clk_out_n           - fmcomms2-3 tx clk
+ * tx_frame_out_p         - fmcomms2-3 tx frame
+ * tx_frame_out_n         - fmcomms2-3 tx frame
+ * tx_data_out_p          - fmcomms2-3 tx data
+ * tx_data_out_n          - fmcomms2-3 tx data
+ * txnrx                  - fmcomms2-3 txnrx
+ * enable                 - fmcomms2-3 enable
+ * gpio_resetb            - fmcomms2-3 gpio
+ * gpio_sync              - fmcomms2-3 gpio
+ * gpio_en_agc            - fmcomms2-3 gpio
+ * gpio_ctl               - fmcomms2-3 gpio
+ * gpio_status            - fmcomms2-3 gpio
+ * spi_csn                - spi chip select
+ * spi_clk                - spi clk
+ * spi_mosi               - spi master out
+ * spi_miso               - spi master in
+ */
 module system_wrapper #(
     parameter FPGA_TECHNOLOGY = 3,
     parameter FPGA_FAMILY = 4,
@@ -37,7 +84,6 @@ module system_wrapper #(
   ) (
     input   [12:0]  gpio_bd_i,
     output  [ 7:0]  gpio_bd_o,
-
     input           rx_clk_in_p,
     input           rx_clk_in_n,
     input           rx_frame_in_p,
@@ -50,16 +96,13 @@ module system_wrapper #(
     output          tx_frame_out_n,
     output  [ 5:0]  tx_data_out_p,
     output  [ 5:0]  tx_data_out_n,
-
     output          enable,
     output          txnrx,
-
     output          gpio_resetb,
     output          gpio_sync,
     output          gpio_en_agc,
     output  [ 3:0]  gpio_ctl,
     input   [ 7:0]  gpio_status,
-
     output          spi_csn,
     output          spi_clk,
     output          spi_mosi,
@@ -148,6 +191,11 @@ module system_wrapper #(
   assign gpio_i[31:13] = gpio_o[31:13];
   assign gpio_i[12: 0] = gpio_bd_i;
 
+  // Group: Instantianted Modules
+
+  // Module: inst_system_pl_wrapper
+  //
+  // Module instance of system_pl_wrapper for the fmcomms2-3 device.
   system_pl_wrapper #(
     .FPGA_TECHNOLOGY(FPGA_TECHNOLOGY),
     .FPGA_FAMILY(FPGA_FAMILY),
@@ -157,10 +205,8 @@ module system_wrapper #(
     .DAC_INIT_DELAY(DAC_INIT_DELAY),
     .DELAY_REFCLK_FREQUENCY(DELAY_REFCLK_FREQUENCY)
   ) inst_system_pl_wrapper (
-    //AXI4LITE SLAVE INTERFACE TO CROSSBAR
     .axi_aclk(s_axi_clk),
     .axi_aresetn(s_axi_aresetn),
-
     .s_axi_awvalid(w_axi_awvalid),
     .s_axi_awaddr(w_axi_awaddr[31:0]),
     .s_axi_awready(w_axi_awready),
@@ -180,39 +226,28 @@ module system_wrapper #(
     .s_axi_rready(w_axi_rready),
     .s_axi_rresp(w_axi_rresp),
     .s_axi_rdata(w_axi_rdata),
-
-    //irq
     .adc_dma_irq(s_adc_dma_irq),
     .dac_dma_irq(s_dac_dma_irq),
-
-    //AD9361 IO
-    //clocks
     .delay_clk(s_delay_clk),
-    //RX LVDS
     .rx_clk_in_p(rx_clk_in_p),
     .rx_clk_in_n(rx_clk_in_n),
     .rx_frame_in_p(rx_frame_in_p),
     .rx_frame_in_n(rx_frame_in_n),
     .rx_data_in_p(rx_data_in_p),
     .rx_data_in_n(rx_data_in_n),
-    //TX LVDS
     .tx_clk_out_p(tx_clk_out_p),
     .tx_clk_out_n(tx_clk_out_n),
     .tx_frame_out_p(tx_frame_out_p),
     .tx_frame_out_n(tx_frame_out_n),
     .tx_data_out_p(tx_data_out_p),
     .tx_data_out_n(tx_data_out_n),
-    //MISC
     .enable(enable),
     .txnrx(txnrx),
     .up_enable(gpio_o[47]),
     .up_txnrx(gpio_o[48]),
-    //sync
     .tdd_sync_t(),
     .tdd_sync_i(1'b0),
     .tdd_sync_o(),
-
-    //axi interface for the adc to the hp interface
     .adc_m_dest_axi_awaddr(adc_hp0_axi_awaddr),
     .adc_m_dest_axi_awlen(adc_hp0_axi_awlen),
     .adc_m_dest_axi_awsize(adc_hp0_axi_awsize),
@@ -229,8 +264,6 @@ module system_wrapper #(
     .adc_m_dest_axi_bvalid(adc_hp0_axi_bvalid),
     .adc_m_dest_axi_bresp(adc_hp0_axi_bresp),
     .adc_m_dest_axi_bready(adc_hp0_axi_bready),
-
-    //axi interface for dac to the hp interface
     .dac_m_src_axi_arready(dac_hp1_axi_arready),
     .dac_m_src_axi_arvalid(dac_hp1_axi_arvalid),
     .dac_m_src_axi_araddr(dac_hp1_axi_araddr),
@@ -246,6 +279,9 @@ module system_wrapper #(
     .dac_m_src_axi_rlast(dac_hp1_axi_rlast)
   );
 
+  // Module: inst_system_ps_wrapper
+  //
+  // Module instance of inst_system_ps_wrapper for the built in CPU.
   system_ps_wrapper inst_system_ps_wrapper (
     .M_AXI_araddr(w_axi_araddr),
     .M_AXI_arprot(w_axi_arprot),
@@ -266,7 +302,6 @@ module system_wrapper #(
     .M_AXI_wready(w_axi_wready),
     .M_AXI_wstrb(w_axi_wstrb),
     .M_AXI_wvalid(w_axi_wvalid),
-
     .S_AXI_HP0_arready(),
     .S_AXI_HP0_awready(adc_hp0_axi_awready),
     .S_AXI_HP0_bvalid(adc_hp0_axi_bvalid),
@@ -307,7 +342,6 @@ module system_wrapper #(
     .S_AXI_HP0_wstrb(adc_hp0_axi_wstrb),
     .S_AXI_HP0_aruser(1'b0),
     .S_AXI_HP0_awuser(1'b0),
-
     .S_AXI_HP1_arready(dac_hp1_axi_arready),
     .S_AXI_HP1_awready(),
     .S_AXI_HP1_bvalid(),
@@ -348,17 +382,14 @@ module system_wrapper #(
     .S_AXI_HP1_wstrb(~0),
     .S_AXI_HP1_aruser(1'b0),
     .S_AXI_HP1_awuser(1'b0),
-
     .gpio_i(gpio_i),
     .gpio_o(gpio_o),
     .gpio_t(),
-
     .peripheral_aresetn(s_axi_aresetn),
     .pl_clk0(s_axi_clk),
     .pl_clk1(),
     .pl_clk2(s_delay_clk),
     .pl_ps_irq1({{2{1'b0}}, s_adc_dma_irq, s_dac_dma_irq, {4{1'b0}}}),
-
     .spi0_m_i(spi_miso),
     .spi0_m_o(spi_mosi),
     .spi0_mo_t(),
@@ -388,4 +419,5 @@ module system_wrapper #(
     .spi1_ss_n_t(),
     .spi1_ss_o_n()
   );
+
 endmodule

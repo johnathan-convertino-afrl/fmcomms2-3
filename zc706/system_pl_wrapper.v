@@ -1,31 +1,128 @@
 //******************************************************************************
-/// @FILE    system_pl_wrapper.v
-/// @AUTHOR  JAY CONVERTINO
-/// @DATE    2023.11.02
-/// @BRIEF   System wrapper for pl only.
-///
-/// @LICENSE MIT
-///  Copyright 2023 Jay Convertino
-///
-///  Permission is hereby grante, free of charge, to any person obtaining a copy
-///  of this software and associated documentation files (the "Software"), to
-///  deal in the Software without restriction, including without limitation the
-///  rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
-///  sell copies of the Software, and to permit persons to whom the Software is
-///  furnished to do so, subject to the following conditions:
-///
-///  The above copyright notice and this permission notice shall be included in
-///  all copies or substantial portions of the Software.
-///
-///  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-///  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-///  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-///  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-///  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-///  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
-///  IN THE SOFTWARE.
+//  file:     system_pl_wrapper.v
+//
+//  author:   JAY CONVERTINO
+//
+//  date:     2023/11/02
+//
+//  about:    Brief
+//  System wrapper for pl only for zc706 board.
+//
+//  license: License MIT
+//  Copyright 2023 Jay Convertino
+//
+//  Permission is hereby granted, free of charge, to any person obtaining a copy
+//  of this software and associated documentation files (the "Software"), to
+//  deal in the Software without restriction, including without limitation the
+//  rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+//  sell copies of the Software, and to permit persons to whom the Software is
+//  furnished to do so, subject to the following conditions:
+//
+//  The above copyright notice and this permission notice shall be included in
+//  all copies or substantial portions of the Software.
+//
+//  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+//  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+//  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+//  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+//  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+//  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+//  IN THE SOFTWARE.
 //******************************************************************************
 
+/*
+ * Module: system_pl_wrapper
+ *
+ * System wrapper for pl only for zc706 board.
+ *
+ * Parameters:
+ *
+ * FPGA_TECHNOLOGY        - Type of FPGA, such as Ultrascale, Arria 10. 1 is for 7 series.
+ * FPGA_FAMILY            - Sub type of fpga, such as GX, SX, etc. 4 is for zynq.
+ * SPEED_GRADE            - Number that corresponds to the ships recommeneded speed. 20 is for -2.
+ * DEV_PACKAGE            - Specify a number that is equal to the manufactures package. 3 is for ff.
+ * DELAY_REFCLK_FREQUENCY - Reference clock frequency used for ad_data_in instances
+ * ADC_INIT_DELAY         - Initial Delay for the ADC
+ * DAC_INIT_DELAY         - Initial Delay for the DAC
+ *
+ * Ports:
+ *
+ *  axi_aclk                      - AXI Lite control bus
+ *  axi_aresetn                   - AXI Lite control bus
+ *  s_axi_awvalid                 - AXI Lite control bus
+ *  s_axi_awaddr                  - AXI Lite control bus
+ *  s_axi_awready                 - AXI Lite control bus
+ *  s_axi_awprot                  - AXI Lite control bus
+ *  s_axi_wvalid                  - AXI Lite control bus
+ *  s_axi_wdata                   - AXI Lite control bus
+ *  s_axi_wstrb                   - AXI Lite control bus
+ *  s_axi_wready                  - AXI Lite control bus
+ *  s_axi_bvalid                  - AXI Lite control bus
+ *  s_axi_bresp                   - AXI Lite control bus
+ *  s_axi_bready                  - AXI Lite control bus
+ *  s_axi_arvalid                 - AXI Lite control bus
+ *  s_axi_araddr                  - AXI Lite control bus
+ *  s_axi_arready                 - AXI Lite control bus
+ *  s_axi_arprot                  - AXI Lite control bus
+ *  s_axi_rvalid                  - AXI Lite control bus
+ *  s_axi_rready                  - AXI Lite control bus
+ *  s_axi_rresp                   - AXI Lite control bus
+ *  s_axi_rdata                   - AXI Lite control bus
+ *  adc_dma_irq                   - fmcomms2-3 ADC irq
+ *  dac_dma_irq                   - fmcomms2-3 DAC irq
+ *  delay_clk                     - fmcomms2-3 delay clock
+ *  rx_clk_in_p                   - fmcomms2-3 receive clock in
+ *  rx_clk_in_n                   - fmcomms2-3 receive clock in
+ *  rx_frame_in_p                 - fmcomms2-3 receive frame
+ *  rx_frame_in_n                 - fmcomms2-3 receive frame
+ *  rx_data_in_p                  - fmcomms2-3 receive lvds data
+ *  rx_data_in_n                  - fmcomms2-3 receive lvds data
+ *  tx_clk_out_p                  - fmcomms2-3 transmit clock
+ *  tx_clk_out_n                  - fmcomms2-3 transmit clock
+ *  tx_frame_out_p                - fmcomms2-3 transmit frame
+ *  tx_frame_out_n                - fmcomms2-3 transmit frame
+ *  tx_data_out_p                 - fmcomms2-3 transmit lvds data
+ *  tx_data_out_n                 - fmcomms2-3 transmit lvds data
+ *  enable                        - fmcomms2-3 enable
+ *  txnrx                         - fmcomms2-3 txnrx select
+ *  up_enable                     - fmcomms2-3 enable input
+ *  up_txnrx                      - fmcomms2-3 txnrx select input
+ *  tdd_sync_t                    - fmcomms2-3 TDD sync i/o
+ *  tdd_sync_i                    - fmcomms2-3 TDD sync i/o
+ *  tdd_sync_o                    - fmcomms2-3 TDD sync i/o
+ *  adc_m_dest_axi_awaddr         - fmcomms2-3 ADC DMA
+ *  adc_m_dest_axi_awlen          - fmcomms2-3 ADC DMA
+ *  adc_m_dest_axi_awsize         - fmcomms2-3 ADC DMA
+ *  adc_m_dest_axi_awburst        - fmcomms2-3 ADC DMA
+ *  adc_m_dest_axi_awprot         - fmcomms2-3 ADC DMA
+ *  adc_m_dest_axi_awcache        - fmcomms2-3 ADC DMA
+ *  adc_m_dest_axi_awvalid        - fmcomms2-3 ADC DMA
+ *  adc_m_dest_axi_awready        - fmcomms2-3 ADC DMA
+ *  adc_m_dest_axi_wdata          - fmcomms2-3 ADC DMA
+ *  adc_m_dest_axi_wstrb          - fmcomms2-3 ADC DMA
+ *  adc_m_dest_axi_wready         - fmcomms2-3 ADC DMA
+ *  adc_m_dest_axi_wvalid         - fmcomms2-3 ADC DMA
+ *  adc_m_dest_axi_wlast          - fmcomms2-3 ADC DMA
+ *  adc_m_dest_axi_bvalid         - fmcomms2-3 ADC DMA
+ *  adc_m_dest_axi_bresp          - fmcomms2-3 ADC DMA
+ *  adc_m_dest_axi_bready         - fmcomms2-3 ADC DMA
+ *  dac_m_src_axi_arready         - fmcomms2-3 DAC DMA
+ *  dac_m_src_axi_arvalid         - fmcomms2-3 DAC DMA
+ *  dac_m_src_axi_araddr          - fmcomms2-3 DAC DMA
+ *  dac_m_src_axi_arlen           - fmcomms2-3 DAC DMA
+ *  dac_m_src_axi_arsize          - fmcomms2-3 DAC DMA
+ *  dac_m_src_axi_arburst         - fmcomms2-3 DAC DMA
+ *  dac_m_src_axi_arprot          - fmcomms2-3 DAC DMA
+ *  dac_m_src_axi_arcache         - fmcomms2-3 DAC DMA
+ *  dac_m_src_axi_rdata           - fmcomms2-3 DAC DMA
+ *  dac_m_src_axi_rready          - fmcomms2-3 DAC DMA
+ *  dac_m_src_axi_rvalid          - fmcomms2-3 DAC DMA
+ *  dac_m_src_axi_rresp           - fmcomms2-3 DAC DMA
+ *  dac_m_src_axi_rlast           - fmcomms2-3 DAC DMA
+ *  iic_sda_fmc                   - i2c for fmc
+ *  iic_scl_fmc                   - i2c for fmc
+ *  iic2intc_irpt                 - i2c for fmc
+ */
 module system_pl_wrapper #(
     parameter FPGA_TECHNOLOGY = 0,
     parameter FPGA_FAMILY = 0,
@@ -35,62 +132,49 @@ module system_pl_wrapper #(
     parameter DAC_INIT_DELAY = 0,
     parameter DELAY_REFCLK_FREQUENCY = 200
   ) (
-    //AXI4LITE SLAVE INTERFACE TO CROSSBAR
-    input axi_aclk,
-    input axi_aresetn,
-
-    input         s_axi_awvalid,
-    input  [31:0] s_axi_awaddr,
-    output        s_axi_awready,
-    input   [2:0] s_axi_awprot,
-    input         s_axi_wvalid,
-    input  [31:0] s_axi_wdata,
-    input  [ 3:0] s_axi_wstrb,
-    output        s_axi_wready,
-    output        s_axi_bvalid,
-    output [ 1:0] s_axi_bresp,
-    input         s_axi_bready,
-    input         s_axi_arvalid,
-    input  [31:0] s_axi_araddr,
-    output        s_axi_arready,
-    input   [2:0] s_axi_arprot,
-    output        s_axi_rvalid,
-    input         s_axi_rready,
-    output [ 1:0] s_axi_rresp,
-    output [31:0] s_axi_rdata,
-
-    //irq
-    output        adc_dma_irq,
-    output        dac_dma_irq,
-
-    //AD9361 IO
-    //clocks
-    input         delay_clk,
-    //RX LVDS
-    input         rx_clk_in_p,
-    input         rx_clk_in_n,
-    input         rx_frame_in_p,
-    input         rx_frame_in_n,
-    input   [5:0] rx_data_in_p,
-    input   [5:0] rx_data_in_n,
-    //TX LVDS
-    output        tx_clk_out_p,
-    output        tx_clk_out_n,
-    output        tx_frame_out_p,
-    output        tx_frame_out_n,
-    output  [5:0] tx_data_out_p,
-    output  [5:0] tx_data_out_n,
-    //MISC
-    output        enable,
-    output        txnrx,
-    input         up_enable,
-    input         up_txnrx,
-    //sync
-    output        tdd_sync_t,
-    input         tdd_sync_i,
-    output        tdd_sync_o,
-
-    //axi interface for the adc to the hp interface
+    input           axi_aclk,
+    input           axi_aresetn,
+    input           s_axi_awvalid,
+    input  [31:0]   s_axi_awaddr,
+    output          s_axi_awready,
+    input   [2:0]   s_axi_awprot,
+    input           s_axi_wvalid,
+    input  [31:0]   s_axi_wdata,
+    input  [ 3:0]   s_axi_wstrb,
+    output          s_axi_wready,
+    output          s_axi_bvalid,
+    output [ 1:0]   s_axi_bresp,
+    input           s_axi_bready,
+    input           s_axi_arvalid,
+    input  [31:0]   s_axi_araddr,
+    output          s_axi_arready,
+    input   [2:0]   s_axi_arprot,
+    output          s_axi_rvalid,
+    input           s_axi_rready,
+    output [ 1:0]   s_axi_rresp,
+    output [31:0]   s_axi_rdata,
+    output          adc_dma_irq,
+    output          dac_dma_irq,
+    input           delay_clk,
+    input           rx_clk_in_p,
+    input           rx_clk_in_n,
+    input           rx_frame_in_p,
+    input           rx_frame_in_n,
+    input   [5:0]   rx_data_in_p,
+    input   [5:0]   rx_data_in_n,
+    output          tx_clk_out_p,
+    output          tx_clk_out_n,
+    output          tx_frame_out_p,
+    output          tx_frame_out_n,
+    output  [5:0]   tx_data_out_p,
+    output  [5:0]   tx_data_out_n,
+    output          enable,
+    output          txnrx,
+    input           up_enable,
+    input           up_txnrx,
+    output          tdd_sync_t,
+    input           tdd_sync_i,
+    output          tdd_sync_o,
     output [31:0]   adc_m_dest_axi_awaddr,
     output [ 3:0]   adc_m_dest_axi_awlen,
     output [ 2:0]   adc_m_dest_axi_awsize,
@@ -107,8 +191,6 @@ module system_pl_wrapper #(
     input           adc_m_dest_axi_bvalid,
     input  [ 1:0]   adc_m_dest_axi_bresp,
     output          adc_m_dest_axi_bready,
-
-    //axi interface for dac to the hp interface
     input           dac_m_src_axi_arready,
     output          dac_m_src_axi_arvalid,
     output [31:0]   dac_m_src_axi_araddr,
@@ -122,8 +204,6 @@ module system_pl_wrapper #(
     input           dac_m_src_axi_rvalid,
     input  [ 1:0]   dac_m_src_axi_rresp,
     input           dac_m_src_axi_rlast,
-
-    //iic
     inout           iic_sda_fmc,
     inout           iic_scl_fmc,
     output          iic2intc_irpt
@@ -179,6 +259,11 @@ module system_pl_wrapper #(
   wire scl_o;
   wire scl_t;
 
+  // Group: Instantianted Modules
+
+  // Module: iic_sda_iobuf
+  //
+  // Tristate i2c sda
   ad_iobuf #(
     .DATA_WIDTH(1)
   ) iic_sda_iobuf (
@@ -188,6 +273,9 @@ module system_pl_wrapper #(
     .dio_p (iic_sda_fmc)
   );
 
+  // Module: iic_scl_iobuf
+  //
+  // Tristate i2c scl
   ad_iobuf #(
     .DATA_WIDTH(1)
   ) iic_scl_iobuf (
@@ -197,6 +285,9 @@ module system_pl_wrapper #(
     .dio_p (iic_scl_fmc)
   );
 
+  // Module: inst_ad9361_pl_wrapper
+  //
+  // Module instance of ad9361_pl_wrapper for the fmcomms2-3 device.
   ad9361_pl_wrapper #(
     .FPGA_TECHNOLOGY(FPGA_TECHNOLOGY),
     .FPGA_FAMILY(FPGA_FAMILY),
@@ -206,10 +297,8 @@ module system_pl_wrapper #(
     .DAC_INIT_DELAY(DAC_INIT_DELAY),
     .DELAY_REFCLK_FREQUENCY(DELAY_REFCLK_FREQUENCY)
   ) inst_ad9361_pl_wrapper (
-    //AXI4LITE SLAVE INTERFACE TO CROSSBAR
     .axi_aclk(axi_aclk),
     .axi_aresetn(axi_aresetn),
-
     .s_axi_awvalid(connect_axi_awvalid),
     .s_axi_awaddr(connect_axi_awaddr),
     .s_axi_awready(connect_axi_awready),
@@ -229,39 +318,28 @@ module system_pl_wrapper #(
     .s_axi_rready(connect_axi_rready),
     .s_axi_rresp(connect_axi_rresp),
     .s_axi_rdata(connect_axi_rdata),
-
-    //irq
     .adc_dma_irq(adc_dma_irq),
     .dac_dma_irq(dac_dma_irq),
-
-    //AD9361 IO
-    //clocks
     .delay_clk(delay_clk),
-    //RX LVDS
     .rx_clk_in_p(rx_clk_in_p),
     .rx_clk_in_n(rx_clk_in_n),
     .rx_frame_in_p(rx_frame_in_p),
     .rx_frame_in_n(rx_frame_in_n),
     .rx_data_in_p(rx_data_in_p),
     .rx_data_in_n(rx_data_in_n),
-    //TX LVDS
     .tx_clk_out_p(tx_clk_out_p),
     .tx_clk_out_n(tx_clk_out_n),
     .tx_frame_out_p(tx_frame_out_p),
     .tx_frame_out_n(tx_frame_out_n),
     .tx_data_out_p(tx_data_out_p),
     .tx_data_out_n(tx_data_out_n),
-    //MISC
     .enable(enable),
     .txnrx(txnrx),
     .up_enable(up_enable),
     .up_txnrx(up_txnrx),
-    //sync
     .tdd_sync_t(tdd_sync_t),
     .tdd_sync_i(tdd_sync_i),
     .tdd_sync_o(tdd_sync_o),
-
-    //axi interface for the adc to the hp interface
     .adc_m_dest_axi_awaddr(adc_m_dest_axi_awaddr),
     .adc_m_dest_axi_awlen(adc_m_dest_axi_awlen),
     .adc_m_dest_axi_awsize(adc_m_dest_axi_awsize),
@@ -278,8 +356,6 @@ module system_pl_wrapper #(
     .adc_m_dest_axi_bvalid(adc_m_dest_axi_bvalid),
     .adc_m_dest_axi_bresp(adc_m_dest_axi_bresp),
     .adc_m_dest_axi_bready(adc_m_dest_axi_bready),
-
-    //axi interface for dac to the hp interface
     .dac_m_src_axi_arready(dac_m_src_axi_arready),
     .dac_m_src_axi_arvalid(dac_m_src_axi_arvalid),
     .dac_m_src_axi_araddr(dac_m_src_axi_araddr),
@@ -295,28 +371,31 @@ module system_pl_wrapper #(
     .dac_m_src_axi_rlast(dac_m_src_axi_rlast)
   );
 
+  // Module: inst_axi_crossbar_pl
+  //
+  // Module instance of axi_crossbar_pl for the fmcomms2-3 device.
   axi_crossbar_pl inst_axi_crossbar_pl (
-    .aclk(axi_aclk),                    // wire aclk
-    .aresetn(axi_aresetn),              // wire aresetn
-    .s_axi_awaddr(s_axi_awaddr),    // wire [31 : 0] s_axi_awaddr
-    .s_axi_awprot(s_axi_awprot),    // wire [2 : 0] s_axi_awprot
-    .s_axi_awvalid(s_axi_awvalid),  // wire [0 : 0] s_axi_awvalid
-    .s_axi_awready(s_axi_awready),  // wire [0 : 0] s_axi_awready
-    .s_axi_wdata(s_axi_wdata),      // wire [31 : 0] s_axi_wdata
-    .s_axi_wstrb(s_axi_wstrb),      // wire [3 : 0] s_axi_wstrb
-    .s_axi_wvalid(s_axi_wvalid),    // wire [0 : 0] s_axi_wvalid
-    .s_axi_wready(s_axi_wready),    // wire [0 : 0] s_axi_wready
-    .s_axi_bresp(s_axi_bresp),      // wire [1 : 0] s_axi_bresp
-    .s_axi_bvalid(s_axi_bvalid),    // wire [0 : 0] s_axi_bvalid
-    .s_axi_bready(s_axi_bready),    // wire [0 : 0] s_axi_bready
-    .s_axi_araddr(s_axi_araddr),    // wire [31 : 0] s_axi_araddr
-    .s_axi_arprot(s_axi_arprot),    // wire [2 : 0] s_axi_arprot
-    .s_axi_arvalid(s_axi_arvalid),  // wire [0 : 0] s_axi_arvalid
-    .s_axi_arready(s_axi_arready),  // wire [0 : 0] s_axi_arready
-    .s_axi_rdata(s_axi_rdata),      // wire [31 : 0] s_axi_rdata
-    .s_axi_rresp(s_axi_rresp),      // wire [1 : 0] s_axi_rresp
-    .s_axi_rvalid(s_axi_rvalid),    // wire [0 : 0] s_axi_rvalid
-    .s_axi_rready(s_axi_rready),    // wire [0 : 0] s_axi_rready
+    .aclk(axi_aclk),
+    .aresetn(axi_aresetn),
+    .s_axi_awaddr(s_axi_awaddr),
+    .s_axi_awprot(s_axi_awprot),
+    .s_axi_awvalid(s_axi_awvalid),
+    .s_axi_awready(s_axi_awready),
+    .s_axi_wdata(s_axi_wdata),
+    .s_axi_wstrb(s_axi_wstrb),
+    .s_axi_wvalid(s_axi_wvalid),
+    .s_axi_wready(s_axi_wready),
+    .s_axi_bresp(s_axi_bresp),
+    .s_axi_bvalid(s_axi_bvalid),
+    .s_axi_bready(s_axi_bready),
+    .s_axi_araddr(s_axi_araddr),
+    .s_axi_arprot(s_axi_arprot),
+    .s_axi_arvalid(s_axi_arvalid),
+    .s_axi_arready(s_axi_arready),
+    .s_axi_rdata(s_axi_rdata),
+    .s_axi_rresp(s_axi_rresp),
+    .s_axi_rvalid(s_axi_rvalid),
+    .s_axi_rready(s_axi_rready),
     .m_axi_awaddr({iic_fmc_axi_awaddr, connect_axi_awaddr}),
     .m_axi_awprot({iic_fmc_axi_awprot, connect_axi_awprot}),
     .m_axi_awvalid({iic_fmc_axi_awvalid, connect_axi_awvalid}),
@@ -338,34 +417,37 @@ module system_pl_wrapper #(
     .m_axi_rready({iic_fmc_axi_rready, connect_axi_rready})
   );
 
+  // Module: inst_axi_iic_fmc
+  //
+  // Module instance of axi_iic_fmc for the fmcomms2-3 device.
   axi_iic_fmc inst_axi_iic_fmc (
-    .s_axi_aclk(axi_aclk),        // input wire s_axi_aclk
-    .s_axi_aresetn(axi_aresetn),  // input wire s_axi_aresetn
-    .iic2intc_irpt(iic2intc_irpt),  // output wire iic2intc_irpt
-    .s_axi_awaddr(iic_fmc_axi_awaddr[8:0]),    // input wire [8 : 0] s_axi_awaddr
-    .s_axi_awvalid(iic_fmc_axi_awvalid),  // input wire s_axi_awvalid
-    .s_axi_awready(iic_fmc_axi_awready),  // output wire s_axi_awready
-    .s_axi_wdata(iic_fmc_axi_wdata),      // input wire [31 : 0] s_axi_wdata
-    .s_axi_wstrb(iic_fmc_axi_wstrb),      // input wire [3 : 0] s_axi_wstrb
-    .s_axi_wvalid(iic_fmc_axi_wvalid),    // input wire s_axi_wvalid
-    .s_axi_wready(iic_fmc_axi_wready),    // output wire s_axi_wready
-    .s_axi_bresp(iic_fmc_axi_bresp),      // output wire [1 : 0] s_axi_bresp
-    .s_axi_bvalid(iic_fmc_axi_bvalid),    // output wire s_axi_bvalid
-    .s_axi_bready(iic_fmc_axi_bready),    // input wire s_axi_bready
-    .s_axi_araddr(iic_fmc_axi_araddr[8:0]),    // input wire [8 : 0] s_axi_araddr
-    .s_axi_arvalid(iic_fmc_axi_arvalid),  // input wire s_axi_arvalid
-    .s_axi_arready(iic_fmc_axi_arready),  // output wire s_axi_arready
-    .s_axi_rdata(iic_fmc_axi_rdata),      // output wire [31 : 0] s_axi_rdata
-    .s_axi_rresp(iic_fmc_axi_rresp),      // output wire [1 : 0] s_axi_rresp
-    .s_axi_rvalid(iic_fmc_axi_rvalid),    // output wire s_axi_rvalid
-    .s_axi_rready(iic_fmc_axi_rready),    // input wire s_axi_rready
-    .sda_i(sda_i),                  // input wire sda_i
-    .sda_o(sda_o),                  // output wire sda_o
-    .sda_t(sda_t),                  // output wire sda_t
-    .scl_i(scl_i),                  // input wire scl_i
-    .scl_o(scl_o),                  // output wire scl_o
-    .scl_t(scl_t),                  // output wire scl_t
-    .gpo()                      // output wire [0 : 0] gpo
+    .s_axi_aclk(axi_aclk),
+    .s_axi_aresetn(axi_aresetn),
+    .iic2intc_irpt(iic2intc_irpt),
+    .s_axi_awaddr(iic_fmc_axi_awaddr[8:0]),
+    .s_axi_awvalid(iic_fmc_axi_awvalid),
+    .s_axi_awready(iic_fmc_axi_awready),
+    .s_axi_wdata(iic_fmc_axi_wdata),
+    .s_axi_wstrb(iic_fmc_axi_wstrb),
+    .s_axi_wvalid(iic_fmc_axi_wvalid),
+    .s_axi_wready(iic_fmc_axi_wready),
+    .s_axi_bresp(iic_fmc_axi_bresp),
+    .s_axi_bvalid(iic_fmc_axi_bvalid),
+    .s_axi_bready(iic_fmc_axi_bready),
+    .s_axi_araddr(iic_fmc_axi_araddr[8:0]),
+    .s_axi_arvalid(iic_fmc_axi_arvalid),
+    .s_axi_arready(iic_fmc_axi_arready),
+    .s_axi_rdata(iic_fmc_axi_rdata),
+    .s_axi_rresp(iic_fmc_axi_rresp),
+    .s_axi_rvalid(iic_fmc_axi_rvalid),
+    .s_axi_rready(iic_fmc_axi_rready),
+    .sda_i(sda_i),
+    .sda_o(sda_o),
+    .sda_t(sda_t),
+    .scl_i(scl_i),
+    .scl_o(scl_o),
+    .scl_t(scl_t),
+    .gpo()
   );
 
 endmodule

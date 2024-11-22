@@ -1,31 +1,118 @@
 //******************************************************************************
-/// @FILE    system_wrapper.v
-/// @AUTHOR  JAY CONVERTINO
-/// @DATE    2023.12.17
-/// @BRIEF   System wrapper for pl and ps.
-///
-/// @LICENSE MIT
-///  Copyright 2023 Jay Convertino
-///
-///  Permission is hereby granted, free of charge, to any person obtaining a copy
-///  of this software and associated documentation files (the "Software"), to
-///  deal in the Software without restriction, including without limitation the
-///  rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
-///  sell copies of the Software, and to permit persons to whom the Software is
-///  furnished to do so, subject to the following conditions:
-///
-///  The above copyright notice and this permission notice shall be included in
-///  all copies or substantial portions of the Software.
-///
-///  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-///  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-///  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-///  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-///  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-///  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
-///  IN THE SOFTWARE.
+//  file:     system_wrapper.v
+//
+//  author:   JAY CONVERTINO
+//
+//  date:     2023/12/17
+//
+//  about:    Brief
+//  System wrapper for pl and ps for arria10soc board.
+//
+//  license: License MIT
+//  Copyright 2023 Jay Convertino
+//
+//  Permission is hereby granted, free of charge, to any person obtaining a copy
+//  of this software and associated documentation files (the "Software"), to
+//  deal in the Software without restriction, including without limitation the
+//  rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+//  sell copies of the Software, and to permit persons to whom the Software is
+//  furnished to do so, subject to the following conditions:
+//
+//  The above copyright notice and this permission notice shall be included in
+//  all copies or substantial portions of the Software.
+//
+//  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+//  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+//  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+//  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+//  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+//  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+//  IN THE SOFTWARE.
 //******************************************************************************
 
+/*
+ * Module: system_wrapper
+ *
+ * System wrapper for pl and ps for arria10soc board.
+ *
+ * Parameters:
+ *
+ * FPGA_TECHNOLOGY        - Type of FPGA, such as Ultrascale, Arria 10. 103 is for Arria 10.
+ * FPGA_FAMILY            - Sub type of fpga, such as GX, SX, etc. 1 is for SX
+ * SPEED_GRADE            - Number that corresponds to the ships recommeneded speed. 2 is for 2.
+ * DEV_PACKAGE            - Specify a number that is equal to the manufactures package. 3 is for FBGA.
+ * DELAY_REFCLK_FREQUENCY - Reference clock frequency used for ad_data_in instances
+ * ADC_INIT_DELAY         - Initial Delay for the ADC
+ * DAC_INIT_DELAY         - Initial Delay for the DAC
+ *
+ * Ports:
+ *
+ * sys_clk          - Input clock for all clocks
+ * sys_resetn       - Input reset for all resets
+ * hps_ddr_ref_clk  - DDR port
+ * hps_ddr_clk_p    - DDR port
+ * hps_ddr_clk_n    - DDR port
+ * hps_ddr_a        - DDR port
+ * hps_ddr_ba       - DDR port
+ * hps_ddr_bg       - DDR port
+ * hps_ddr_cke      - DDR port
+ * hps_ddr_cs_n     - DDR port
+ * hps_ddr_odt      - DDR port
+ * hps_ddr_reset_n  - DDR port
+ * hps_ddr_act_n    - DDR port
+ * hps_ddr_par      - DDR port
+ * hps_ddr_alert_n  - DDR port
+ * hps_ddr_dqs_p    - DDR port
+ * hps_ddr_dqs_n    - DDR port
+ * hps_ddr_dq       - DDR port
+ * hps_ddr_dbi_n    - DDR port
+ * hps_ddr_rzq      - DDR port
+ * hps_eth_rxclk    - Ethernet Device
+ * hps_eth_rxctl    - Ethernet Device
+ * hps_eth_rxd      - Ethernet Device
+ * hps_eth_txclk    - Ethernet Device
+ * hps_eth_txctl    - Ethernet Device
+ * hps_eth_txd      - Ethernet Device
+ * hps_eth_mdc      - Ethernet Device
+ * hps_eth_mdio     - Ethernet Device
+ * hps_sdio_clk     - SD card interface
+ * hps_sdio_cmd     - SD card interface
+ * hps_sdio_d       - SD card interface
+ * hps_usb_clk      - USB interface
+ * hps_usb_dir      - USB interface
+ * hps_usb_nxt      - USB interface
+ * hps_usb_stp      - USB interface
+ * hps_usb_d        - USB interface
+ * hps_uart_rx      - UART interface
+ * hps_uart_tx      - UART interface
+ * hps_i2c_sda      - i2c interface
+ * hps_i2c_scl      - i2c interface
+ * hps_gpio         - GPIO interface
+ * gpio_bd_i        - fmcomms2-3 gpio
+ * gpio_bd_o        - fmcomms2-3 gpio
+ * rx_clk_in        - fmcomms2-3 receive clock in
+ * rx_frame_in_p    - fmcomms2-3 receive frame
+ * rx_frame_in_n    - fmcomms2-3 receive frame
+ * rx_data_in_p     - fmcomms2-3 receive lvds data
+ * rx_data_in_n     - fmcomms2-3 receive lvds data
+ * tx_clk_out_p     - fmcomms2-3 transmit clock
+ * tx_clk_out_n     - fmcomms2-3 transmit clock
+ * tx_frame_out_p   - fmcomms2-3 transmit frame
+ * tx_frame_out_n   - fmcomms2-3 transmit frame
+ * tx_data_out_p    - fmcomms2-3 transmit lvds data
+ * tx_data_out_n    - fmcomms2-3 transmit lvds data
+ * enable           - fmcomms2-3 enable
+ * txnrx            - fmcomms2-3 txnrx select
+ * gpio_resetb      - fmcomms2-3 gpio reset
+ * gpio_sync        - fmcomms2-3 gpio sync
+ * gpio_en_agc      - fmcomms2-3 gpio enable agc
+ * gpio_ctl         - fmcomms2-3 control
+ * gpio_status      - fmcomms2-3 status
+ * spi_csn          - fmcomms2-3 spi select
+ * spi_clk          - fmcomms2-3 spi clk
+ * spi_mosi         - fmcomms2-3 spi output
+ * spi_miso         - fmcomms2-3 spi input
+ */
 module system_wrapper #(
     parameter FPGA_TECHNOLOGY = 103,
     parameter FPGA_FAMILY = 1,
@@ -35,13 +122,8 @@ module system_wrapper #(
     parameter ADC_INIT_DELAY = 23,
     parameter DAC_INIT_DELAY = 0
   ) (
-    // clock and resets
-
     input             sys_clk,
     input             sys_resetn,
-
-    // hps-ddr4 (32)
-
     input             hps_ddr_ref_clk,
     output  [  0:0]   hps_ddr_clk_p,
     output  [  0:0]   hps_ddr_clk_n,
@@ -60,9 +142,6 @@ module system_wrapper #(
     inout   [ 31:0]   hps_ddr_dq,
     inout   [  3:0]   hps_ddr_dbi_n,
     input             hps_ddr_rzq,
-
-    // hps-ethernet
-
     input   [  0:0]   hps_eth_rxclk,
     input   [  0:0]   hps_eth_rxctl,
     input   [  3:0]   hps_eth_rxd,
@@ -71,42 +150,21 @@ module system_wrapper #(
     output  [  3:0]   hps_eth_txd,
     output  [  0:0]   hps_eth_mdc,
     inout   [  0:0]   hps_eth_mdio,
-
-    // hps-sdio
-
     output  [  0:0]   hps_sdio_clk,
     inout   [  0:0]   hps_sdio_cmd,
     inout   [  7:0]   hps_sdio_d,
-
-    // hps-usb
-
     input   [  0:0]   hps_usb_clk,
     input   [  0:0]   hps_usb_dir,
     input   [  0:0]   hps_usb_nxt,
     output  [  0:0]   hps_usb_stp,
     inout   [  7:0]   hps_usb_d,
-
-    // hps-uart
-
     input   [  0:0]   hps_uart_rx,
     output  [  0:0]   hps_uart_tx,
-
-    // hps-i2c (shared w fmc-a, fmc-b)
-
     inout   [  0:0]   hps_i2c_sda,
     inout   [  0:0]   hps_i2c_scl,
-
-    // hps-gpio (max-v-u16)
-
     inout   [  3:0]   hps_gpio,
-
-    // gpio (max-v-u21)
-
     input   [  7:0]   gpio_bd_i,
     output  [  3:0]   gpio_bd_o,
-
-    // ad9361-interface
-
     input             rx_clk_in,
     input             rx_frame_in_p,
     input             rx_frame_in_n,
@@ -120,13 +178,11 @@ module system_wrapper #(
     output  [ 5:0]    tx_data_out_n,
     output            enable,
     output            txnrx,
-
     output            gpio_resetb,
     output            gpio_sync,
     output            gpio_en_agc,
     output  [  3:0]   gpio_ctl,
     input   [  7:0]   gpio_status,
-
     output            spi_csn,
     output            spi_clk,
     output            spi_mosi,
@@ -225,6 +281,11 @@ module system_wrapper #(
 
   assign sys_resetn_s = sys_resetn & sys_hps_resetn;
 
+  // Group: Instantianted Modules
+
+  // Module: inst_system_pl_wrapper
+  //
+  // Module instance of system_pl_wrapper for the fmcomms2-3 device.
   system_pl_wrapper #(
     .FPGA_TECHNOLOGY(FPGA_TECHNOLOGY),
     .FPGA_FAMILY(FPGA_FAMILY),
@@ -234,10 +295,8 @@ module system_wrapper #(
     .DAC_INIT_DELAY(DAC_INIT_DELAY),
     .DELAY_REFCLK_FREQUENCY(DELAY_REFCLK_FREQUENCY)
   ) inst_system_pl_wrapper (
-    //AXI4LITE SLAVE INTERFACE TO CROSSBAR
     .axi_aclk(s_axi_clk),
     .axi_aresetn(s_axi_aresetn),
-
     .s_axi_awvalid(w_axi_awvalid),
     .s_axi_awaddr(w_axi_awaddr),
     .s_axi_awready(w_axi_awready),
@@ -257,39 +316,28 @@ module system_wrapper #(
     .s_axi_rready(w_axi_rready),
     .s_axi_rresp(w_axi_rresp),
     .s_axi_rdata(w_axi_rdata),
-
-    //irq
     .adc_dma_irq(s_adc_dma_irq),
     .dac_dma_irq(s_dac_dma_irq),
-
-    //AD9361 IO
-    //clocks
     .delay_clk(s_delay_clk),
-    //RX LVDS
     .rx_clk_in_p(rx_clk_in),
     .rx_clk_in_n(1'b0),
     .rx_frame_in_p(rx_frame_in_p),
     .rx_frame_in_n(rx_frame_in_n),
     .rx_data_in_p(rx_data_in_p),
     .rx_data_in_n(rx_data_in_n),
-    //TX LVDS
     .tx_clk_out_p(tx_clk_out_p),
     .tx_clk_out_n(tx_clk_out_n),
     .tx_frame_out_p(tx_frame_out_p),
     .tx_frame_out_n(tx_frame_out_n),
     .tx_data_out_p(tx_data_out_p),
     .tx_data_out_n(tx_data_out_n),
-    //MISC
     .enable(enable),
     .txnrx(txnrx),
     .up_enable(gpio_o[47]),
     .up_txnrx(gpio_o[48]),
-    //sync
     .tdd_sync_t(),
     .tdd_sync_i(1'b0),
     .tdd_sync_o(),
-
-    //axi interface for the adc to the hp interface
     .adc_m_dest_axi_awaddr(adc_hp0_axi_awaddr),
     .adc_m_dest_axi_awlen(adc_hp0_axi_awlen),
     .adc_m_dest_axi_awsize(adc_hp0_axi_awsize),
@@ -306,8 +354,6 @@ module system_wrapper #(
     .adc_m_dest_axi_bvalid(adc_hp0_axi_bvalid),
     .adc_m_dest_axi_bresp(adc_hp0_axi_bresp),
     .adc_m_dest_axi_bready(adc_hp0_axi_bready),
-
-    //axi interface for dac to the hp interface
     .dac_m_src_axi_arready(dac_hp1_axi_arready),
     .dac_m_src_axi_arvalid(dac_hp1_axi_arvalid),
     .dac_m_src_axi_araddr(dac_hp1_axi_araddr),
@@ -323,6 +369,9 @@ module system_wrapper #(
     .dac_m_src_axi_rlast(dac_hp1_axi_rlast)
   );
 
+  // Module: inst_system_ps_wrapper
+  //
+  // Module instance of inst_system_ps_wrapper for the built in CPU.
   system_ps_wrapper inst_system_ps_wrapper (
     .s_axi_clk_clk(s_axi_clk),
     .s_axi_aresetn_reset_n(s_axi_aresetn),
@@ -345,19 +394,14 @@ module system_wrapper #(
     .m_axi_rresp(w_axi_rresp),
     .m_axi_rvalid(w_axi_rvalid),
     .m_axi_rready(w_axi_rready),
-
     .sys_delay_clk_clk(s_delay_clk),
-
     .sys_clk_clk(sys_clk),
-
     .sys_gpio_bd_in_port(gpio_i[31:0]),
     .sys_gpio_bd_out_port(gpio_o[31:0]),
     .sys_gpio_in_export(gpio_i[63:32]),
     .sys_gpio_out_export(gpio_o[63:32]),
-
     .sys_hps_rstn_reset_n (sys_resetn),
     .sys_rstn_reset_n (sys_resetn_s),
-
     .sys_hps_io_hps_io_phery_emac0_TX_CLK (hps_eth_txclk),
     .sys_hps_io_hps_io_phery_emac0_TXD0 (hps_eth_txd[0]),
     .sys_hps_io_hps_io_phery_emac0_TXD1 (hps_eth_txd[1]),
@@ -402,10 +446,8 @@ module system_wrapper #(
     .sys_hps_io_hps_io_gpio_gpio1_io14 (hps_gpio[1]),
     .sys_hps_io_hps_io_gpio_gpio1_io16 (hps_gpio[2]),
     .sys_hps_io_hps_io_gpio_gpio1_io17 (hps_gpio[3]),
-
     .sys_hps_out_rstn_reset_n (sys_hps_resetn),
     .sys_hps_fpga_irq1_irq ({32{1'b0}}),
-
     .sys_hps_dma_data_awid(0),
     .sys_hps_dma_data_awaddr(adc_hp0_axi_awaddr),
     .sys_hps_dma_data_awlen(adc_hp0_axi_awlen),
@@ -444,7 +486,6 @@ module system_wrapper #(
     .sys_hps_dma_data_rlast(dac_hp1_axi_rlast),
     .sys_hps_dma_data_rvalid(dac_hp1_axi_rvalid),
     .sys_hps_dma_data_rready(dac_hp1_axi_rready),
-
     .sys_hps_ddr_mem_ck(hps_ddr_clk_p),
     .sys_hps_ddr_mem_ck_n(hps_ddr_clk_n),
     .sys_hps_ddr_mem_a(hps_ddr_a),
@@ -464,13 +505,11 @@ module system_wrapper #(
     .sys_hps_ddr_oct_oct_rzqin(hps_ddr_rzq),
     .sys_hps_ddr_ref_clk_clk(hps_ddr_ref_clk),
     .sys_hps_ddr_rstn_reset_n(sys_resetn),
-
     .sys_spi_MISO(spi_miso),
     .sys_spi_MOSI(spi_mosi),
     .sys_spi_SCLK(spi_clk),
     .sys_spi_SS_n(spi_csn),
     .irq_irq({s_dac_dma_irq, s_adc_dma_irq, {2{1'b0}}})
   );
-
 
 endmodule
