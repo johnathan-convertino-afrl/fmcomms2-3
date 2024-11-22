@@ -1,0 +1,1 @@
+﻿NDFramePage.OnPageTitleLoaded("SystemVerilogModule:isnt_util_tdd_sync","isnt_util_tdd_sync");NDSummary.OnSummaryLoaded("SystemVerilogModule:isnt_util_tdd_sync",[["SystemVerilog","SystemVerilog"]],[["Modules","Module"]],[[169,0,0,"isnt_util_tdd_sync"]]);

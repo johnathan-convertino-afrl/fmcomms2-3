@@ -1,0 +1,1 @@
+﻿NDFramePage.OnPageTitleLoaded("SystemVerilogModule:inst_axi_ad9361","inst_axi_ad9361");NDSummary.OnSummaryLoaded("SystemVerilogModule:inst_axi_ad9361",[["SystemVerilog","SystemVerilog"]],[["Modules","Module"]],[[161,0,0,"inst_axi_ad9361"]]);

@@ -1,5 +1,8 @@
 # FMCOMMS2-3 FPGA Project
 ### Contains core files and scripts to generate a fmcomms2-3 platform using fusesoc.
+
+![image](docs/manual/img/AFRL.png)
+
 ---
 
    author: Jay Convertino
@@ -19,7 +22,13 @@
 #### Previous
   - none
 
-### Dependencies
+### DOCUMENTATION
+  For detailed usage information, please navigate to one of the following sources. They are the same, just in a different format.
+
+  - [fmcomms2-3.pdf](docs/manual/fmcomms2-3.pdf)
+  - [github page](https://johnathan-convertino-afrl.github.io/fmcomms2-3/)
+
+### DEPENDENCIES
 #### Build
   - AFRL:utility:digilent_zed_board_base:1.0.0
   - AFRL:utility:digilent_zed_boot_gen:1.0.0
@@ -49,8 +58,7 @@
 #### Simulation
   - none, not implimented.
 
-### IP USAGE
-#### Parameters
+### PARAMETERS
 ##### ad9361_pl_wrapper.v
   * FPGA_TECHNOLOGY : See ad_hdl_fusesoc readme.md for details
   * FPGA_FAMILY : See ad_hdl_fusesoc readme.md for details
@@ -64,64 +72,12 @@
   * AXI_DMAC_DAC_ADDR : Set address of DAC DMA, default: 32'h7C420000
   * AXI_AD9361_ADDR : Set address of AD9361, default: 32'h79020000
 
-### COMPONENTS
-#### a10soc
-  - system_constr.sdc
-  - system_gen.tcl
-  - system_pl_gen.tcl
-  - system_pl_wrapper.v
-  - system_wrapper.v
-
-#### common
-  - ad9361_pl_wrapper.v
-
-#### hanpilot
-  - system_constr.sdc
-  - system_gen.tcl
-  - system_pl_gen.tcl
-  - system_pl_wrapper.v
-  - system_wrapper.v
-
-#### inprogress (added in future once VexRiscv is ready)
-  - genesys_2
-  - kc705
-  - netfpga_1g-cml
-  - vc707
-
-#### zc702
-  - system_constr.xdc
-  - system_gen.tcl
-  - system_pl_gen.tcl
-  - system_pl_wrapper.v
-  - system_wrapper.v
-
-#### zc706
-  - system_constr.xdc
-  - system_gen.tcl
-  - system_pl_gen.tcl
-  - system_pl_wrapper.v
-  - system_wrapper.v
-
-#### zcu102
-  - system_constr.xdc
-  - system_gen.tcl
-  - system_pl_gen.tcl
-  - system_pl_wrapper.v
-  - system_wrapper.v
-
-#### zed
-  - system_constr.xdc
-  - system_gen.tcl
-  - system_pl_gen.tcl
-  - system_pl_wrapper.v
-  - system_wrapper.v
-
-### fusesoc
+### FUSESOC
 
 * fusesoc_info.core created.
 * Simulation not available
 
-#### TARGETS
+#### Targets
 
 * RUN WITH: (fusesoc run --target=zed_bootgen VENDER:CORE:NAME:VERSION)
 * -- target can be one of the below.
