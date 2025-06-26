@@ -1,5 +1,6 @@
 # FMCOMMS2-3 FPGA Project
 ### Contains core files and scripts to generate a fmcomms2-3 platform using fusesoc.
+---
 
 ![image](docs/manual/img/AFRL.png)
 
