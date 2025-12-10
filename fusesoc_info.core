@@ -111,7 +111,7 @@ filesets:
       - AD:common:util_clkdiv:1.0.0
       - AD:common:ad_rst:1.0.0
       - AFRL:utility:tcl_helper_check:1.0.0
-      - zipcpu:axi_lite:crossbar:1.0.0
+      - AFRL:bus:axi_lite_otm:1.0.0
 
 targets:
 
